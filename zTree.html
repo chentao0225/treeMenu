@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>树形菜单</title>
+    <link rel="stylesheet" href="./css/reset.min.css" />
+    <style>
+      .container {
+        box-sizing: border-box;
+        margin: 20px auto;
+        padding: 10;
+        width: 600px;
+        border: 1px solid #aaa;
+      }
+      .level {
+        display: none;
+        font-size: 14px;
+        margin-left: 10px;
+      }
+      .level.level0 {
+        display: block;
+        margin-left: 0;
+      }
+      .level li {
+        position: relative;
+        padding-left: 15px;
+        line-height: 30px;
+      }
+      .level li .icon {
+        position: absolute;
+        left: 0;
+        top: 9px;
+        box-sizing: border-box;
+        width: 12px;
+        height: 12px;
+        line-height: 8px;
+        text-align: center;
+        border: 1px solid #aaa;
+        background: #eee;
+        cursor: pointer;
+      }
+      .level li .icon:after {
+        display: block;
+        content: "+";
+        font-size: 12px;
+        font-style: normal;
+      }
+      .level li .icon.open:after {
+        content: "-";
+      }
+      .level li .title {
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <ul class="level level0"></ul>
+    </div>
+    <script src="./js/jquery.min.js"></script>
+    <script>
+      let treeModule = (function () {
+        let $level0 = $(".level0"),
+          count = 0;
+        //请求数据
+        let queryDate = function (callback) {
+          $.ajax({
+            url: "data.json",
+            method: "get",
+            success: callback,
+          });
+        };
+
+        //绑定数据
+        let bindHTML = function (result) {
+          console.log(result);
+          let str = ``;
+          result.forEach((item) => {
+            count++;
+            let { open, name, children } = item;
+            str += `<li>
+                <a href="javascript:;" class="title">${name}</a>
+                ${
+                  children
+                    ? `<em class="icon ${open ? "open" : ""}"></em> 
+                <ul class="level level${count}" style="display:${
+                        open ? "block" : "none"
+                      }">
+                    ${bindHTML(children)}
+                </ul>`
+                    : ""
+                }
+            </li>`;
+            count--;
+          });
+          return str;
+        };
+        return {
+          init() {
+            queryDate(function anonymous(result) {
+              $level0.html(bindHTML(result));
+            });
+            $level0.click(function (ev) {
+              let target = ev.target,
+                $target = $(target),
+                $next = $target.next("ul");
+              if (target.tagName === "EM") {
+                $target.toggleClass("open");
+                $next.stop().slideToggle(100);
+              }
+            });
+          },
+        };
+      })();
+      treeModule.init();
+    </script>
+  </body>
+</html>
