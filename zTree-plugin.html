@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>树形菜单-插件版</title>
+    <link rel="stylesheet" href="./css/reset.min.css" />
+    <style>
+      .container {
+        box-sizing: border-box;
+        margin: 20px auto;
+        padding: 10;
+        width: 600px;
+        border: 1px solid #aaa;
+        -webkit-user-select: none;
+      }
+      .level {
+        display: none;
+        font-size: 14px;
+        margin-left: 10px;
+      }
+      .level.level0 {
+        display: block;
+        margin-left: 0;
+      }
+      .level li {
+        position: relative;
+        padding-left: 15px;
+        line-height: 30px;
+      }
+      .level li .icon {
+        position: absolute;
+        left: 0;
+        top: 9px;
+        box-sizing: border-box;
+        width: 12px;
+        height: 12px;
+        line-height: 8px;
+        text-align: center;
+        border: 1px solid #aaa;
+        background: #eee;
+        cursor: pointer;
+      }
+      .level li .icon:after {
+        display: block;
+        content: "+";
+        font-size: 12px;
+        font-style: normal;
+      }
+      .level li .icon.open:after {
+        content: "-";
+      }
+      .level li .title {
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <ul class="level level0" id="tree1"></ul>
+      <ul class="level level0" id="tree2"></ul>
+    </div>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/ztree-plugin.js"></script>
+    <script>
+      $.ajax({
+        url: "data.json",
+        method: "get",
+        success: (res) => {
+          $("#tree1").ztree(res);
+          $("#tree2").ztree(res);
+        },
+      });
+    </script>
+  </body>
+</html>
